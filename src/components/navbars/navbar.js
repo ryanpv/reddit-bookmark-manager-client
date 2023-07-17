@@ -13,7 +13,7 @@ export default function AppNavbar() {
   async function searchSubmit(e) {
     e.preventDefault();
     // redirect to page with all results
-    navigate.push(`/admin/search-results?${searchRef.current.value}`)
+    navigate(`/admin/search-results?${searchRef.current.value}`)
     // console.log(searchRef.current.value.split(" "));
     setCurrentPage(1)
     if (searchRef.current.value === "" || !/\S/.test(searchRef.current.value)) 
@@ -47,7 +47,7 @@ export default function AppNavbar() {
 
     try {
       await logout()
-      navigate.push('/admin/login')
+      navigate('/admin/login')
     } catch {
       alert('failed to log out')
     }
