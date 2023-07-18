@@ -6,6 +6,7 @@ import { Redirect, useNavigate, NavLink } from 'react-router-dom'
 export default function AppNavbar() {
   const { currentUser, setSearchResponse, logout, setCurrentPage } = useAuth();
   const token = currentUser && currentUser._delegate.accessToken
+  
   const navigate = useNavigate();
   const searchRef = React.useRef('')
   const [searchItem, setSearchItem] = React.useState("")
@@ -13,7 +14,7 @@ export default function AppNavbar() {
   async function searchSubmit(e) {
     e.preventDefault();
     // redirect to page with all results
-    navigate(`/admin/search-results?${searchRef.current.value}`)
+    navigate(`/app/search-results?${searchRef.current.value}`)
     // console.log(searchRef.current.value.split(" "));
     setCurrentPage(1)
     if (searchRef.current.value === "" || !/\S/.test(searchRef.current.value)) 
@@ -47,7 +48,7 @@ export default function AppNavbar() {
 
     try {
       await logout()
-      navigate('/admin/login')
+      navigate('/app/login')
     } catch {
       alert('failed to log out')
     }
@@ -58,11 +59,14 @@ export default function AppNavbar() {
     <>
     <Navbar bg="light" expand="lg" fixed='sticky'>
       <Container fluid>
+        <a href="/test" className="d-flex align-items-center link-dark text-decoration-none">
+          <i className="bi bi-bootstrap fs-2 text-dark"></i>
+        </a>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
       
 
-        <Form className="d-flex justify-content-center" onSubmit={searchSubmit}>
+        <Form className="w-100 me-3" onSubmit={searchSubmit}>
             <Form.Control
               type="search"
               placeholder="Search For Bookmark"

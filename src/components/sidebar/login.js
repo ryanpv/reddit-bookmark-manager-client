@@ -29,7 +29,7 @@ export default function Login() {
       // })
       // openLogin()
 
-      navigate.push('/admin/profile')
+      navigate('/app/profile')
     } catch {
       setError('Failed to sign in')
       passwordRef.current.value = null
@@ -63,7 +63,7 @@ export default function Login() {
           </Form>
 
           <div className='w-100 text-center mt-3'>
-            <Link to="/admin/forgot-password">Forgot Password?</Link> 
+            <Link to="/app/forgot-password">Forgot Password?</Link> 
           </div>
 
         </Card.Body>
@@ -72,7 +72,7 @@ export default function Login() {
 
       { currentUser ? null : 
       <div className='w-100 text-center mt-2'>
-        Need an account? <Link to='/admin/signup'>Sign up</Link>
+        Need an account? <Link to='/app/signup'>Sign up</Link>
       </div>
       }
     </>

@@ -24,14 +24,14 @@ const sidebarRoutes = [
     name: "Sign Up",
     icon: "",
     component: Signup,
-    layout: "/admin"
+    layout: "/app"
   },
   {
     path: "/login",
     name: "Log In",
     icon: "",
     component: Login,
-    layout: "/admin"
+    layout: "/app"
   }
 ];
 

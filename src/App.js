@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, Routes, Route } from 'react-router-dom';
 import { auth } from "./firebase";
 import AppNavbar from "./components/navbars/navbar.js";
 import { useAuth } from "./contexts/auth-context.js";
@@ -24,7 +24,13 @@ function App() {
       <UserProvider>
         <Sidebar color={ color} image={ hasImage ? image : "" } routes={ sidebarRoutes }
           categories={ categories } setCategories={ setCategories} />
-        <AppNavbar />
+        {/* <AppNavbar /> */}
+
+        <div className="content">
+          <Routes>
+
+          </Routes>
+        </div>
       </UserProvider>
     </>
 
