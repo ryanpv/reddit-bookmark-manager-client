@@ -1,49 +1,121 @@
 import React, { useContext, useState, useEffect } from "react"
+import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
+  signOut, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase.js";
+
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = React.createContext()
 
 export function useAuth() {
   return useContext(AuthContext)
 }
-
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState()
-  const [loading, setLoading] = useState(true)
+  const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
+  const [currentUser, setCurrentUser] = useState("")
+  const [loading, setLoading] = useState(false)
   const [categories, setCategories] = useState([]);
   const [searchResponse, setSearchResponse] = React.useState([])
   const [categoryIdData, setCategoryIdData] = React.useState("")
   const [currentPage, setCurrentPage] = React.useState(1)
   const [documentCount, setDocumentCount] = React.useState(0);
-
+  const [userEmailStore, setUserEmailStore] = useState("")
+  const [error, setError] = useState('');
+  const [loginAttempts, setLoginAttempts] = useState(1)
+  
+  const navigate = useNavigate();
+  const providerGoogle = new GoogleAuthProvider();
+  
   function signup(email, password) {
-  return auth.createUserWithEmailAndPassword(email, password)
-  }
+    return createUserWithEmailAndPassword(auth, email, password)
+  };
 
-  function login(email, password) {
+  async function login(email, password) {
+    if (loginAttempts > 5 && userEmailStore === email) {
+      console.log('too many login attempts');
 
-    return auth.signInWithEmailAndPassword(email, password)
-  }
+      await fetch(`${ serverUrl }/disable-user`, { 
+        method: 'POST',
+        headers: {
+          "Content-type": "application/json",
+        },
+        credentials: 'include',
+        body: JSON.stringify({ userEmail: email })
+      });
+    } else if (userEmailStore !== email) {
+      setLoginAttempts(1)
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        setLoginAttempts(1)
+        // console.log('user: ', userCredential.user)
+        // setCurrentUser(userCredential.user.displayName ? userCredential.user.displayName : userCredential.user.email); 
+        navigate('/')
+        return userCredential.user
+      })
+      .catch((error) => {
+        const errorCode = error.code
+        const errorMessage = error.message
+        console.log('err: ', errorMessage);
+        setLoginAttempts((prev) => prev + 1);
+        setError(errorMessage);
+      });
+  };
 
   function logout() {
     setCurrentUser("")
     setCategories([])
     console.log("user signed out");
-    return auth.signOut()
-  }
+    return signOut(auth)
+  };
 
   function resetPassword(email) {
-    return auth.sendPasswordResetEmail(email)
-  }
+    return sendPasswordResetEmail(auth, email)
+  };
+
+  function loginWithGoogle(){
+    signInWithPopup(auth, providerGoogle)
+      .then(async (result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email; // email of user
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
+      navigate('/');
+  };
 
   useEffect(() => { 
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      setCurrentUser(user)
-      setLoading(false)
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      try {
+        if (user) {
+          await fetch(`${ serverUrl }/users/login-session`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              "Content-type": "application/json"
+            },
+            body: JSON.stringify({ accessToken: user.accessToken, isRegUser: user.isRegUser })
+          });
+        }
+        
+        console.log('user logged: ', user)
+        setCurrentUser(user)
+        setLoading(false)
+      } catch (err) {
+        console.log(err)
+        setError("Login error")
+      }
     });
 
     return unsubscribe
-  }, [])
+  }, [serverUrl])
 
 
   const value = {
@@ -58,10 +130,14 @@ export function AuthProvider({ children }) {
     currentUser,
     signup,
     login,
+    loginWithGoogle,
     logout,
     resetPassword,
     categories,
-    setCategories
+    setCategories,
+    setUserEmailStore,
+    error,
+    setError
   }
 
   return (

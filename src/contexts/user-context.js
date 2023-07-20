@@ -9,7 +9,7 @@ export function useRedditAuth() {
 export function UserProvider({ children }) {  
   const [savedList, setSavedList] = React.useState([]);
   const [categoryContent, setCategoryContent] = React.useState([]);
-  const [loading, setLoading] = React.useState();
+  const [loading, setLoading] = React.useState(false);
 
 
 

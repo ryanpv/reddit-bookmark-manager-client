@@ -1,9 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useLocation, NavLink, useParams, useNavigate, } from "react-router-dom";
-import { Button, Nav, Form, NavDropdown } from "react-bootstrap";
+import { useLocation, NavLink, useParams, useNavigate, Route, Routes} from "react-router-dom";
+import { Button, Nav, Form, NavDropdown, Container } from "react-bootstrap";
 // import CategoryList from "./categoryList.js";
 import { useAuth } from "../../contexts/auth-context.js";
+import Signup from "../account/signup.js";
+import Login from "../account/login.js";
 import AppNavbar from "../navbars/navbar.js";
+import ResetPassword from "../account/reset-password.js";
 
 
 function Sidebar({ color, image, routes, categories, setCategories }) { // 'routes' parameter is reference to the routes prop from "/Sidebar.js" to share the routes array data
@@ -31,25 +34,25 @@ function Sidebar({ color, image, routes, categories, setCategories }) { // 'rout
 
 //////////////////////////////////////////
 
-  React.useEffect(() => {
-    async function getCategoryList(token) {
+  // React.useEffect(() => {
+  //   async function getCategoryList(token) {
 
-      if(token) {
+  //     if(token) {
 
-      const response = await fetch("https://saveredd-api.onrender.com/categorylist", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      const categoryRecords = await response.json();
+  //     const response = await fetch("https://saveredd-api.onrender.com/categorylist", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`
+  //       }
+  //     })
+  //     const categoryRecords = await response.json();
 
-      await setCategories(categoryRecords)
-    } else { 
-    // console.log("not logged in/token not fetched yet") 
-    }
-  } 
-    getCategoryList(token)
-  }, [confirmValue, token])
+  //     await setCategories(categoryRecords)
+  //   } else { 
+  //   // console.log("not logged in/token not fetched yet") 
+  //   }
+  // } 
+  //   getCategoryList(token)
+  // }, [confirmValue, token])
 
 
   function handleAddCategory(value) {
@@ -117,10 +120,10 @@ function Sidebar({ color, image, routes, categories, setCategories }) { // 'rout
   function submitCategorySearch(e) {
     e.preventDefault();
 
-    const categoryNameId = categories.map(category => category.categoryName)
+    const categoryNameId = categories.length > 0 && categories.map(category => category.categoryName)
     // console.log(categoryNameId);
 
-    if (categoryNameId.includes(inputSearch.current.value)) {
+    if (categoryNameId && categoryNameId.includes(inputSearch.current.value)) {
       navigate(`/app/category/${inputSearch.current.value}`)
     } else {
       alert("Search is case-sensitive. Please check spelling.")
@@ -132,79 +135,49 @@ function Sidebar({ color, image, routes, categories, setCategories }) { // 'rout
 ///////////////////////////////////////////////////////////////////////////////////
   return (
     <>
-      <header className="py-3 mb-4 border-bottom shadow">
-          <div className="container-fluid align-items-center d-flex">
+      <aside className="col-sm-3 flex-grow-sm-1 flex-shrink-1 flex-grow-0 sticky-top pb-sm-0 pb-3">
+          <div className="bg-light border rounded-3 p-1 h-100 sticky-to">
+              <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+                  <li className="nav-item">
+                      <a href="/" className="nav-link px-2 text-truncate">
+                          <i className="bi bi-house fs-5"></i>
+                          <span className="d-none d-sm-inline"> Home</span>
+                      </a>
+                  </li>
+                  <li>
+                      <a href="#" className="nav-link px-2 text-truncate">
+                          <i className="bi bi-speedometer fs-5"></i>
+                          <span className="d-none d-sm-inline"> Dashboard</span>
+                      </a>
+                  </li>
+              </ul>
+
+              <div className="bookmark-funcs">
+                <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+                  <li>
+              { addNewCategory ? 
+                <Button size="sm" className="w-75 text-center mt-2 mb-1" variant="outline-primary" onClick={addCategory}>+ Add New Category</Button> 
+                : 
+                <Form onSubmit={onSubmit}>
+                  <Form.Control maxLength="40" size="sm" id="new-category" ref={categoryRef} type='text' 
+                  value={cat.categoryName} 
+                  onChange={ (e) => handleAddCategory({ categoryName: e.target.value }) }
+                  placeholder="Type New Category Name"
+                  />
+                </Form> }
+                  </li>
+                  <li>
+                { categorySearchState ? 
+                <Button className="w-75 text-center mt-1 mb-2" size="sm" variant="outline-primary" onClick={searchCategoryList}>Search Category List</Button>
+                : 
+                <Form onSubmit={submitCategorySearch}>
+                  <Form.Control type="text" list="categoryName" ref={inputSearch} placeholder="Search Category Name" />
+                </Form> }
+                  </li>
+                </ul>
+              </div>
           </div>
-          <AppNavbar />
-      </header>
-      <div className="container-fluid pb-3 flex-grow-1 d-flex flex-column flex-sm-row overflow-auto">
-          <div className="row flex-grow-sm-1 flex-grow-0">
-              <aside className="col-sm-3 flex-grow-sm-1 flex-shrink-1 flex-grow-0 sticky-top pb-sm-0 pb-3">
-                  <div className="bg-light border rounded-3 p-1 h-100 sticky-top">
-                      <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-                          <li className="nav-item">
-                              <a href="#" className="nav-link px-2 text-truncate">
-                                  <i className="bi bi-house fs-5"></i>
-                                  <span className="d-none d-sm-inline"> Home</span>
-                              </a>
-                          </li>
-                          <li>
-                              <a href="#" className="nav-link px-2 text-truncate">
-                                  <i className="bi bi-speedometer fs-5"></i>
-                                  <span className="d-none d-sm-inline"> Dashboard</span>
-                              </a>
-                          </li>
-                          <li>
-                              <a href="#" className="nav-link px-2 text-truncate"><i className="bi bi-card-text fs-5"></i>
-                                  <span className="d-none d-sm-inline"> Orders</span> </a>
-                          </li>
-                          <li>
-                              <a href="#" className="nav-link px-2 text-truncate"><i className="bi bi-bricks fs-5"></i>
-                                  <span className="d-none d-sm-inline"> Products</span> </a>
-                          </li>
-                          <li>
-                              <a href="#" className="nav-link px-2 text-truncate"><i className="bi bi-people fs-5"></i>
-                                  <span className="d-none d-sm-inline"> Customers</span> </a>
-                          </li>
-                      </ul>
-
-                      <div className="text-center">
-                      { addNewCategory ? 
-                        <Button size="sm" className="w-75 text-center mt-2 mb-1" variant="outline-primary" onClick={addCategory}>+ Add New Category</Button> 
-                        : 
-                        <Form onSubmit={onSubmit}>
-                          <Form.Control maxLength="40" size="sm" id="new-category" ref={categoryRef} type='text' 
-                          value={cat.categoryName} 
-                          onChange={ (e) => handleAddCategory({ categoryName: e.target.value }) }
-                          placeholder="Type New Category Name"
-                          />
-                        </Form> }
-
-                        { categorySearchState ? 
-                        <Button className="w-75 text-center mt-1 mb-2" size="sm" variant="outline-primary" onClick={searchCategoryList}>Search Category List</Button>
-                        : 
-                        <Form onSubmit={submitCategorySearch}>
-                          <Form.Control type="text" list="categoryName" ref={inputSearch} placeholder="Search Category Name" />
-                        </Form> }
-
-                      </div>
-                  </div>
-              </aside>
-              <main className="col overflow-auto h-100">
-                  <div className="bg-light border rounded-3 p-3">
-                      <h2>Main</h2>
-                      <p>Sriracha biodiesel taxidermy organic post-ironic, Intelligentsia salvia mustache 90's code editing brunch. Butcher polaroid VHS art party, hashtag Brooklyn deep v PBR narwhal sustainable mixtape swag wolf squid tote bag. Tote bag cronut semiotics, raw denim deep v taxidermy messenger bag. Tofu YOLO Etsy, direct trade ethical Odd Future jean shorts paleo. Forage Shoreditch tousled aesthetic irony, street art organic Bushwick artisan cliche semiotics ugh synth chillwave meditation. Shabby chic lomo plaid vinyl chambray Vice. Vice sustainable cardigan, Williamsburg master cleanse hella DIY 90's blog.</p>
-                      <p>Ethical Kickstarter PBR asymmetrical lo-fi. Dreamcatcher street art Carles, stumptown gluten-free Kickstarter artisan Wes Anderson wolf pug. Godard sustainable you probably haven't heard of them, vegan farm-to-table Williamsburg slow-carb readymade disrupt deep v. Meggings seitan Wes Anderson semiotics, cliche American Apparel whatever. Helvetica cray plaid, vegan brunch Banksy leggings +1 direct trade. Wayfarers codeply PBR selfies. Banh mi McSweeney's Shoreditch selfies, forage fingerstache food truck occupy YOLO Pitchfork fixie iPhone fanny pack art party Portland.</p>
-                      <hr />
-                      <h4>More content...</h4>
-                      <p>Ethical Kickstarter PBR asymmetrical lo-fi. Dreamcatcher street art Carles, stumptown gluten-free Kickstarter artisan Wes Anderson wolf pug. Godard sustainable you probably haven't heard of them, vegan farm-to-table Williamsburg slow-carb readymade disrupt deep v. Meggings seitan Wes Anderson semiotics, cliche American Apparel whatever. Helvetica cray plaid, vegan brunch Banksy leggings +1 direct trade. Wayfarers codeply PBR selfies. Banh mi McSweeney's Shoreditch selfies, forage fingerstache food truck occupy YOLO Pitchfork fixie iPhone fanny pack art party Portland.</p>
-                      <hr />
-                      <h4>More content...</h4>
-                      <p>Sriracha biodiesel taxidermy organic post-ironic, Intelligentsia salvia mustache 90's code editing brunch. Butcher polaroid VHS art party, hashtag Brooklyn deep v PBR narwhal sustainable mixtape swag wolf squid tote bag. Tote bag cronut semiotics, raw denim deep v taxidermy messenger bag. Tofu YOLO Etsy, direct trade ethical Odd Future jean shorts paleo. Forage Shoreditch tousled aesthetic irony, street art organic Bushwick artisan cliche semiotics ugh synth chillwave meditation. Shabby chic lomo plaid vinyl chambray Vice. Vice sustainable cardigan, Williamsburg master cleanse hella DIY 90's blog.</p>
-                  </div>
-              </main>
-          </div>
-      </div>
+      </aside>
     </>
   );
 }

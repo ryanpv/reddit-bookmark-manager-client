@@ -1,6 +1,6 @@
 // import UserProfile from "views/UserProfile.js";
-import Signup from "./components/sidebar/signup.js";
-import Login from "./components/sidebar/login.js";
+import Signup from "./components/account/signup.js";
+import Login from "./components/account/login.js";
 // import AllBookmarksDev from "views/AllBookmarks-dev"
 // import AllBookmarks from "views/AllBookmarks"
 
