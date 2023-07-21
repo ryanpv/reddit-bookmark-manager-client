@@ -2,12 +2,13 @@ import React, { useRef, useState, useEffect } from "react";
 import { useLocation, NavLink, useParams, useNavigate, Route, Routes} from "react-router-dom";
 import { Button, Nav, Form, NavDropdown, Container } from "react-bootstrap";
 // import CategoryList from "./categoryList.js";
-import { allUserContext } from "../../contexts/user-context.js";
+import { useUserContext } from "../../contexts/user-context.js";
 import { useAuth } from "../../contexts/auth-context.js";
 import Signup from "../account/signup.js";
 import Login from "../account/login.js";
 import AppNavbar from "../navbars/navbar.js";
 import ResetPassword from "../account/reset-password.js";
+import CategoryList from "./category-list.js";
 
 
 function Sidebar({ color, image, routes }) { // 'routes' parameter is reference to the routes prop from "/Sidebar.js" to share the routes array data
@@ -16,7 +17,7 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
   const categoryInputRef = useRef();
   const inputSearch = useRef();
   const navigate = useNavigate();
-  const { categories, setCategories } = allUserContext();
+  const { categories, setCategories } = useUserContext();
   const { currentUser, setCurrentPage } = useAuth();
   // console.log("current", currentUser._delegate.uid);
   const token = currentUser && currentUser.accessToken;
@@ -32,27 +33,27 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
 
 
 //////////////////////////////////////////
+console.log("curr user: ", currentUser);
+  React.useEffect(() => {
+    async function getCategoryList() {
+      if(currentUser !== "" || currentUser !== null) {
+      const response = await fetch(`${ serverUrl }/bookmarker/category-list`, {
+        credentials: "include",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      const categoryRecords = await response.json();
 
-  // React.useEffect(() => {
-  //   async function getCategoryList(token) {
+      setCategories(categoryRecords)
+    } else { 
+    console.log("No user currently logged in")
+    setCategories([]) 
+    }
+  };
 
-  //     if(token) {
-
-  //     const response = await fetch("https://saveredd-api.onrender.com/categorylist", {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`
-  //       }
-  //     })
-  //     const categoryRecords = await response.json();
-
-  //     await setCategories(categoryRecords)
-  //   } else { 
-  //   // console.log("not logged in/token not fetched yet") 
-  //   }
-  // } 
-  //   getCategoryList(token)
-  // }, [confirmValue, token])
-
+  getCategoryList()
+  }, [serverUrl, currentUser]);
 
   function handleAddCategory(value) {
     return setCategoryInputValue((prevCategories) => {
@@ -62,12 +63,8 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
 
   async function submitNewCategory(e) {
     e.preventDefault();
-
-    // const newCat = { ...updateCategoryList }
-
-// duplicateCheck to see if category name already exists 
+  // duplicateCheck to see if category name already exists 
     const duplicateCheck = categories ? categories.filter(category => category.categoryName.toUpperCase() === categoryInputValue.categoryName.toUpperCase()) : []
-// try to refact() meor to ternary with "false" statements as true
 
     if (categoryInputValue.categoryName === "" || !/\S/.test(categoryInputValue.categoryName) || categoryInputValue.categoryName.includes('  ')) {
       categoryInputRef.current.value = ""
@@ -80,7 +77,6 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          // Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(categoryInputValue)
       })
@@ -91,8 +87,7 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
 
       // Reset state for input field STATE
       setCategoryInputValue({ categoryName: "" });
-      
-      // setConfirmValue(newCategory.value)
+
       // Reset state of "+ Add New Category" button after input submission
       setNewCategoryInput(addNewCategory => !addNewCategory)
       // Reset input value of "+ Add New Category" to empty
@@ -173,6 +168,10 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
                   <Form.Control type="text" list="categoryName" ref={inputSearch} placeholder="Search Category Name" />
                 </Form> }
                   </li>
+                </ul>
+                <hr></hr>
+                <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+                  <CategoryList categories={ categories } setCategories={ setCategories }/>
                 </ul>
               </div>
           </div>

@@ -3,7 +3,7 @@ import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, si
   signOut, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase.js";
 import { useNavigate } from "react-router-dom";
-import { allUserContext } from "./user-context.js";
+import { useUserContext } from "./user-context.js";
 
 const AuthContext = React.createContext()
 
@@ -12,7 +12,7 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const { categories, setCategories } = allUserContext();
+  const { categories, setCategories } = useUserContext();
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
   const [currentUser, setCurrentUser] = useState("")
   const [loading, setLoading] = useState(false)

@@ -1,9 +1,9 @@
-import React, { createContext, useContext } from 'react';
+import React, { useContext } from 'react';
 
-const UserContext = createContext();
+const UserContext = React.createContext();
 
-export function allUserContext() {
-  return React.createContext(UserContext)
+export function useUserContext() {
+  return useContext(UserContext)
 }
 
 export function UserProvider({ children }) {  
