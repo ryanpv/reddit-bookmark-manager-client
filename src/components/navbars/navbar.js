@@ -5,7 +5,7 @@ import { Redirect, useNavigate, NavLink } from 'react-router-dom'
 
 function AppNavbar() {
   const { currentUser, setSearchResponse, logout, setCurrentPage } = useAuth();
-  const token = currentUser && currentUser._delegate.accessToken
+  const token = currentUser && currentUser.accessToken
   
   const navigate = useNavigate();
   const searchRef = React.useRef('')

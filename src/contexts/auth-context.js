@@ -2,19 +2,20 @@ import React, { useContext, useState, useEffect } from "react"
 import { GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, 
   signOut, sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase.js";
-
 import { useNavigate } from "react-router-dom";
+import { allUserContext } from "./user-context.js";
 
 const AuthContext = React.createContext()
 
 export function useAuth() {
   return useContext(AuthContext)
 }
+
 export function AuthProvider({ children }) {
+  const { categories, setCategories } = allUserContext();
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
   const [currentUser, setCurrentUser] = useState("")
   const [loading, setLoading] = useState(false)
-  const [categories, setCategories] = useState([]);
   const [searchResponse, setSearchResponse] = React.useState([])
   const [categoryIdData, setCategoryIdData] = React.useState("")
   const [currentPage, setCurrentPage] = React.useState(1)
@@ -101,15 +102,16 @@ export function AuthProvider({ children }) {
             headers: {
               "Content-type": "application/json"
             },
-            body: JSON.stringify({ accessToken: user.accessToken, isRegUser: user.isRegUser })
+            body: JSON.stringify({ accessToken: user._delegate.accessToken, isRegUser: user._delegate.isRegUser })
           });
+          setCurrentUser(user._delegate.displayName ? user._delegate.displayName : user._delegate.email)
+        } else {
+          setCurrentUser("")
         }
         
-        console.log('user logged: ', user)
-        setCurrentUser(user)
         setLoading(false)
       } catch (err) {
-        console.log(err)
+        console.log("Auth error: ", err)
         setError("Login error")
       }
     });

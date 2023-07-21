@@ -2,14 +2,15 @@ import React, { createContext, useContext } from 'react';
 
 const UserContext = createContext();
 
-export function useRedditAuth() {
-  return useContext(UserContext)
+export function allUserContext() {
+  return React.createContext(UserContext)
 }
 
 export function UserProvider({ children }) {  
   const [savedList, setSavedList] = React.useState([]);
   const [categoryContent, setCategoryContent] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [categories, setCategories] = React.useState([]);
 
 
 
@@ -18,7 +19,9 @@ export function UserProvider({ children }) {
     savedList,
     setSavedList,
     categoryContent,
-    setCategoryContent
+    setCategoryContent,
+    categories,
+    setCategories
   }
 
   return (

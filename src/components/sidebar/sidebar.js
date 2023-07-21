@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useLocation, NavLink, useParams, useNavigate, Route, Routes} from "react-router-dom";
 import { Button, Nav, Form, NavDropdown, Container } from "react-bootstrap";
 // import CategoryList from "./categoryList.js";
+import { allUserContext } from "../../contexts/user-context.js";
 import { useAuth } from "../../contexts/auth-context.js";
 import Signup from "../account/signup.js";
 import Login from "../account/login.js";
@@ -9,26 +10,24 @@ import AppNavbar from "../navbars/navbar.js";
 import ResetPassword from "../account/reset-password.js";
 
 
-function Sidebar({ color, image, routes, categories, setCategories }) { // 'routes' parameter is reference to the routes prop from "/Sidebar.js" to share the routes array data
+function Sidebar({ color, image, routes }) { // 'routes' parameter is reference to the routes prop from "/Sidebar.js" to share the routes array data
+  const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
   const location = useLocation();
-  const categoryRef = useRef();
+  const categoryInputRef = useRef();
   const inputSearch = useRef();
   const navigate = useNavigate();
+  const { categories, setCategories } = allUserContext();
   const { currentUser, setCurrentPage } = useAuth();
   // console.log("current", currentUser._delegate.uid);
-  const token = currentUser && currentUser._delegate.accessToken;
+  const token = currentUser && currentUser.accessToken;
   const newCategory = document.getElementById("new-category");
   const categorySearch = document.getElementById("inputSearch");
   const [confirmValue, setConfirmValue] = useState("");
-  const [cat, setCat] = useState({
-    userId: "",
-    categoryName: "",
-    }
-  );
+  const [categoryInputValue, setCategoryInputValue] = useState({ categoryName: "" });
   const activeRoute = (routeName) => {
     return location.pathname.indexOf(routeName) > -1 ? "active" : "";
   };
-  const [addNewCategory, setAddNewCategory] = useState(true); // to reveal input to add new category
+  const [newCategoryInput, setNewCategoryInput] = useState(true); // to reveal input to add new category
   const [categorySearchState, setCategorySearchState] = useState(true);
 
 
@@ -56,61 +55,61 @@ function Sidebar({ color, image, routes, categories, setCategories }) { // 'rout
 
 
   function handleAddCategory(value) {
-    return setCat((prevCategories) => {
+    return setCategoryInputValue((prevCategories) => {
       return { ...prevCategories, ...value }
     })
-  }
-  // console.log(cat);
+  };
 
-  async function onSubmit(e) {
+  async function submitNewCategory(e) {
     e.preventDefault();
 
-    const submitCategoryName = categoryRef.current.value
-    const newCat = { ...cat }
+    // const newCat = { ...updateCategoryList }
+
 // duplicateCheck to see if category name already exists 
-    const duplicateCheck = categories.filter(category => category.categoryName.toUpperCase() === newCat.categoryName.toUpperCase() )
-// try to refactor to ternary with "false" statements as true
-// use sort() method to also display them in order
-    if (submitCategoryName === "" || !/\S/.test(submitCategoryName) || submitCategoryName.includes('  ')) {
-      categoryRef.current.value = ""
+    const duplicateCheck = categories ? categories.filter(category => category.categoryName.toUpperCase() === categoryInputValue.categoryName.toUpperCase()) : []
+// try to refact() meor to ternary with "false" statements as true
+
+    if (categoryInputValue.categoryName === "" || !/\S/.test(categoryInputValue.categoryName) || categoryInputValue.categoryName.includes('  ')) {
+      categoryInputRef.current.value = ""
       alert("Please enter a proper category name. Do not include double-spacing.")
-      setAddNewCategory(addNewCategory => !addNewCategory)
+      setNewCategoryInput(addNewCategory => !addNewCategory)
 
-    } else if (duplicateCheck.length < 1 && newCategory) {
-
-    await fetch("https://saveredd-api.onrender.com/categorylist/add", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(newCat)
-    })
-    .catch(error => {
-      console.log(error);
-      return;
-    })
-
-    setCat({
-      userId: "",
-      categoryName: "",
+    } else if (duplicateCheck.length < 1 && categoryInputValue.categoryName !== "") {
+      await fetch(`${ serverUrl }/bookmarker/category-list`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(categoryInputValue)
       })
-    
-    setConfirmValue(newCategory.value)
-    setAddNewCategory(addNewCategory => !addNewCategory)
-    categoryRef.current.value = ""
+      .catch(error => {
+        console.log(error);
+        return;
+      });
+
+      // Reset state for input field STATE
+      setCategoryInputValue({ categoryName: "" });
+      
+      // setConfirmValue(newCategory.value)
+      // Reset state of "+ Add New Category" button after input submission
+      setNewCategoryInput(addNewCategory => !addNewCategory)
+      // Reset input value of "+ Add New Category" to empty
+      categoryInputRef.current.value = ""
 
   } else {
-    categoryRef.current.value = ""
+    categoryInputRef.current.value = ""
     alert("Category name ALREADY exists.")
     
   }
   
-  categoryRef.current.value = null
+  categoryInputRef.current.value = null
   }
 
+  // Function to change state for "+ Add New Category" to show input field/button
   function addCategory() {
-    setAddNewCategory(addNewCategory => !addNewCategory)
+    setNewCategoryInput(addNewCategory => !addNewCategory)
   }
 
   function searchCategoryList() {
@@ -155,12 +154,12 @@ function Sidebar({ color, image, routes, categories, setCategories }) { // 'rout
               <div className="bookmark-funcs">
                 <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
                   <li>
-              { addNewCategory ? 
+              { newCategoryInput ? 
                 <Button size="sm" className="w-75 text-center mt-2 mb-1" variant="outline-primary" onClick={addCategory}>+ Add New Category</Button> 
                 : 
-                <Form onSubmit={onSubmit}>
-                  <Form.Control maxLength="40" size="sm" id="new-category" ref={categoryRef} type='text' 
-                  value={cat.categoryName} 
+                <Form onSubmit={submitNewCategory}>
+                  <Form.Control maxLength="40" size="sm" id="new-category" ref={ categoryInputRef } type='text' 
+                  value={categoryInputValue.categoryName} 
                   onChange={ (e) => handleAddCategory({ categoryName: e.target.value }) }
                   placeholder="Type New Category Name"
                   />

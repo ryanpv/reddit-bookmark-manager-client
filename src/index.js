@@ -8,7 +8,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css'; // bootstrap-icons
 import { UserProvider } from './contexts/user-context';
 
 
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
