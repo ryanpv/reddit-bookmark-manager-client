@@ -9,6 +9,8 @@ import sidebarRoutes from "./sidebar-routes";
 import Signup from "./components/account/signup";
 import Login from "./components/account/login";
 import ResetPassword from "./components/account/reset-password";
+import RedditPosts from "./components/views/reddit-posts";
+import LogCallback from "./components/views/log-callback";
 
 
 function App() {
@@ -35,6 +37,8 @@ function App() {
           <div className="col overflow-auto h-100">
                 <div className="bg-light border rounded-3 p-3">
                   <Routes>
+                    <Route path="/user-reddit-posts" element={ <RedditPosts /> } />
+                    <Route path="/log_callback" element={ <LogCallback /> } />
                     <Route path="/login" element={ <Login /> } />
                     <Route path="/sign-up" element={ <Signup /> } />
                     <Route path="/forgot-password" element={ <ResetPassword /> } />

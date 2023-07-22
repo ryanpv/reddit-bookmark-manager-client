@@ -139,9 +139,9 @@ console.log("curr user: ", currentUser);
                       </a>
                   </li>
                   <li>
-                      <a href="#" className="nav-link px-2 text-truncate">
-                          <i className="bi bi-speedometer fs-5"></i>
-                          <span className="d-none d-sm-inline"> Dashboard</span>
+                      <a href="/user-reddit-posts" className="nav-link px-2 text-truncate">
+                          <i className="bi bi-reddit fs-5"></i>
+                          <span className="d-none d-sm-inline"> Your Reddit Posts</span>
                       </a>
                   </li>
               </ul>
