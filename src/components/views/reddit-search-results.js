@@ -86,36 +86,31 @@ export default function RedditSearchResults() {
 
   return (
     <>
-    <h2>Search Results</h2>
+      <h2>Search Results</h2>
 
-          {searchResponse.length > 0 ? 
-    <table className='table table-striped' style={{ marginTop: 20, border: "1px solid black" }}>
-        <thead>
+      { searchResponse.length > 0 ? 
+        <table className='table table-striped' style={{ marginTop: 20, border: "1px solid black" }}>
+          <thead>
             <tr>
               <th style={{ margin: 10, border: "1px solid black", padding: "10px 10px" }}>Category</th>
               <th style={{ margin: 20, borderBottom: "1px solid black", padding: "10px 10px" }}>Bookmarks</th>
               <th></th>
             </tr>
-        </thead>
-        <tbody>
-          { displaySearchResult() } 
+          </thead>
+          <tbody>
+            { displaySearchResult() } 
           </tbody>
-      </table>
-          : <h2>No results</h2>}
+        </table>
+      : <h2>No results</h2> }
 
-    <div>
       <Pagination postsPerPage={ postsPerPage } totalPosts={ searchResponse.length } />
-    </div>
 
-    <datalist id='categoryName'>
-      { categories?.map(results => { return (<option key={results._id}>{results.categoryName}</option> ) }) }
-    </datalist>
+      <datalist id='categoryName'>
+        { categories?.map(results => { return (<option key={results._id}>{results.categoryName}</option> ) }) }
+      </datalist>
 
-    <div>
-    <PostModal show={show} handleClose={handleClose} list={"categoryName"} submitBookmark={submitBookmark} postItem={postItem} setPostItem={setPostItem} 
-      postData={postData} />
-    </div>
-    
+      <PostModal show={show} handleClose={handleClose} list={"categoryName"} submitBookmark={submitBookmark} postItem={postItem} setPostItem={setPostItem} 
+        postData={postData} />
     </>
   )
 }

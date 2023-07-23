@@ -148,22 +148,15 @@ export default function RedditPosts() {
 
   return (
     <>
-    <div>
-      </div>
-    {/* { currentUser ? <button onClick={ () => { openLogin() } }>Login with Reddit</button> : 'PLEASE LOGIN' } */}
-    {/* <button onClick={ () => { getReddit() } }>get reddit</button> */}
+      { currentUser ?
+      <>
+        <Button variant="warning" size="md" onClick={ () => { openLogin() } }>Reddit Login</Button>{ <i> Login to Reddit to see your saved posts. (Click on the 'Load Bookmarks' button after logging into reddit)</i> }
 
-    { currentUser ?
-    <>
-    <Button variant="warning" size="md" onClick={ () => { openLogin() } }>Reddit Login</Button>{ <i> Login to Reddit to see your saved posts. (Click on the 'Load Bookmarks' button after logging into reddit)</i> }
+        <div>
+        <h3>All Saved Reddit Content</h3>    
 
-    <div>
-
-
-    <div>
-    <h3>All Saved Reddit Content</h3>        
-    <InputGroup className="mb-3">
-        <Form className="w-25 d-flex justify-content-center" onSubmit={filterList}>
+        <InputGroup className="mb-3">
+          <Form className="w-25 d-flex justify-content-center" onSubmit={filterList}>
             <Form.Control
               type="text"
               placeholder="Search For Bookmark"
@@ -171,42 +164,34 @@ export default function RedditPosts() {
               aria-label="Search"
               ref={savedPostsRef}                          
               />
-          </Form>
-      </InputGroup>
-      
-      <table className='table table-striped' style={{ marginTop: 20, border: "1px solid black" }}>
-        <thead>
-            <tr>
-              <th style={{ margin: 20, border: "1px solid black", padding: "10px 10px" }}>ID</th>
-              <th style={{ margin: 20, border: "1px solid black", padding: "10px 10px" }}>Bookmarks</th>
-              <th style={{ width: 10, border: "1px solid black" }} ><Button variant="link" size="sm" onClick={ () => getRedditPosts() }>Load Bookmarks</Button></th>
-            </tr>
-        </thead>
-        <tbody>{ displayPosts() }</tbody>
-      </table>
-    </div>
+            </Form>
+          </InputGroup>
+          
+          <table className='table table-striped' style={{ marginTop: 20, border: "1px solid black" }}>
+            <thead>
+              <tr>
+                <th style={{ margin: 20, border: "1px solid black", padding: "10px 10px" }}>ID</th>
+                <th style={{ margin: 20, border: "1px solid black", padding: "10px 10px" }}>Bookmarks</th>
+                <th style={{ width: 10, border: "1px solid black" }} ><Button variant="link" size="sm" onClick={ () => getRedditPosts() }>Load Bookmarks</Button></th>
+              </tr>
+            </thead>
+            <tbody>{ displayPosts() }</tbody>
+          </table>
+        </div>
 
-    </div>
+        <Pagination postsPerPage={postsPerPage} totalPosts={savedList?.length} />
+      </>
+      : 'PLEASE LOGIN' }
 
+      <datalist id='categoryName'>
+        { categories?.map(results => { return (<option key={results._id}>{results.categoryName}</option> ) }) }
+      </datalist>
 
-    <div>
-    <Pagination postsPerPage={postsPerPage} totalPosts={savedList?.length} />
-    </div>
-    </>
-    : 'PLEASE LOGIN' }
-
-    <datalist id='categoryName'>
-      { categories?.map(results => { return (<option key={results._id}>{results.categoryName}</option> ) }) }
-    </datalist>
-
-    <div>
       <PostModal show={show} handleClose={handleClose} list={"categoryName"} categories={categories}
       submitBookmark={submitBookmark} postItem={postItem} setPostItem={setPostItem} postData={postData} />
-    </div>
 
     {/* *****ENSURE REDDIT TOKEN REVOKED AND STATE REMOVED***** */}
     {/* do a check if data has been rendered, if not then button shows. also, if no saved bookmarks, then return a string saying so  */}
     </>
-
   )
 }
