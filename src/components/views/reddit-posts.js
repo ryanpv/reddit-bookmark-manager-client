@@ -2,9 +2,9 @@ import React, { useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth-context';
 import { Button, InputGroup, Form } from 'react-bootstrap';
-// import Pagination from "../layouts/Pagination"
 import { useUserContext } from '../../contexts/user-context';
 import { PostModal } from '../modals/save-post-modal';
+import Pagination from './reddit-pagination';
 
 export default function RedditPosts() {
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
@@ -21,15 +21,11 @@ export default function RedditPosts() {
   const handleClose = () => setShow(false);
   const [searchSavedPosts, setSearchSavedPosts] = React.useState([])
   const [postData, setPostData] = React.useState({})
-  const [postItem, setPostItem] = React.useState(
-    {
-    categoryName: "",
-   });
-  //  const [currentPage, setCurrentPage] = React.useState(1);
-   const [fetchedPostsPerPage, setFetchedPostsPerPage] = React.useState(5);
-   const indexOfLastPost = currentPage * fetchedPostsPerPage;
-   const indexOfFirstPost = indexOfLastPost - fetchedPostsPerPage;
-   const currentPosts = savedList?.slice(indexOfFirstPost, indexOfLastPost);
+  const [postItem, setPostItem] = React.useState({ categoryName: "" });
+   const [postsPerPage, setPostsPerPage] = React.useState(5); // State for how many posts per page to show
+   const indexOfLastPost = currentPage * postsPerPage;
+   const indexOfFirstPost = indexOfLastPost - postsPerPage;
+   const paginatedPosts = savedList?.slice(indexOfFirstPost, indexOfLastPost); // Pagination by using slice() on array for fetched posts - returns sliced data
    const savedPostsRef = useRef();
 
   const FullList = (props) => { 
@@ -44,11 +40,10 @@ export default function RedditPosts() {
           </Link>
           </td>
           <td>
-            {/* <Button onClick={() => btnClick(props.listItem.name) }>+</Button> */}
             <Button variant="outline-primary" onClick={() => btnClick({ name: props.listItem.name, pathName: props.listItem.permalink, title: props.listItem.title,
-               author: props.listItem.author, subreddit: props.listItem.subreddit_name_prefixed, body: props.listItem.body, link_title: props.listItem.link_title, 
-               over_18: props.listItem.over_18 })}
-               >+</Button>
+              author: props.listItem.author, subreddit: props.listItem.subreddit_name_prefixed, body: props.listItem.body, link_title: props.listItem.link_title, 
+              over_18: props.listItem.over_18 })}
+              >+</Button>
           </td>
       </tr>
   )};
@@ -105,7 +100,7 @@ export default function RedditPosts() {
   // Display users reddit saved posts onto table
   function displayPosts() {
     if(savedList.length > 0) {
-      return currentPosts.map((listItem) => {
+      return paginatedPosts.map((listItem) => {
         return (
           <FullList listItem={ listItem.data } key={ listItem.data.permalink } bookmarkRef={ bookmarkRef }/>
         );
@@ -194,9 +189,9 @@ export default function RedditPosts() {
     </div>
 
 
-    {/* <div>
-    <Pagination postsPerPage={fetchedPostsPerPage} totalPosts={savedList?.length} />
-    </div> */}
+    <div>
+    <Pagination postsPerPage={postsPerPage} totalPosts={savedList?.length} />
+    </div>
     </>
     : 'PLEASE LOGIN' }
 
