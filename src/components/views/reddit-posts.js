@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth-context';
 import { Button, InputGroup, Form } from 'react-bootstrap';
 // import Pagination from "../layouts/Pagination"
@@ -13,6 +13,7 @@ export default function RedditPosts() {
   const clientid = process.env.REACT_APP_REDDIT_ID; // Reddit client ID
   const baseUrl = 'https://www.reddit.com'
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser, categories, currentPage, setCurrentPage, setSearchResponse } = useAuth();
   const token = currentUser && currentUser.accessToken
   const bookmarkRef = useRef("");
@@ -30,7 +31,7 @@ export default function RedditPosts() {
    const indexOfFirstPost = indexOfLastPost - fetchedPostsPerPage;
    const currentPosts = savedList?.slice(indexOfFirstPost, indexOfLastPost);
    const savedPostsRef = useRef();
-  
+
   const FullList = (props) => { 
 
       return (
@@ -57,12 +58,12 @@ export default function RedditPosts() {
   function filterList(e) {
     e.preventDefault();
     setCurrentPage(1)
-
-    navigate(`/admin/search-results?${savedPostsRef.current.value}`)
-    const savedPostsSearch = savedList.filter(el => { if (el.title) {
-      return el.title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
-    } 
-    return el.link_title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
+    navigate(`/search-results?${savedPostsRef.current.value}`)
+    const savedPostsSearch = savedList.filter(post => { 
+      if (post.data.title) {
+      return post.data.title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
+      } 
+    return post.data.link_title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
   })
 
     setSearchResponse(savedPostsSearch)

@@ -9,7 +9,7 @@ export function PostModal({show, handleClose, submitBookmark, postItem, setPostI
       return { ...prev, ...value, ...postData} 
     })
   };
-  console.log("postitem: ", postItem)
+
   return (
     <>
       <Modal show={show} onHide={handleClose}>

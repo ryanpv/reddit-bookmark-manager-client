@@ -11,6 +11,7 @@ import Login from "./components/account/login";
 import ResetPassword from "./components/account/reset-password";
 import RedditPosts from "./components/views/reddit-posts";
 import LogCallback from "./components/views/log-callback";
+import RedditSearchResults from "./components/views/reddit-search-results";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
                   <Routes>
                     <Route path="/user-reddit-posts" element={ <RedditPosts /> } />
                     <Route path="/log_callback" element={ <LogCallback /> } />
+                    <Route path="/search-results" element={ <RedditSearchResults /> } />
                     <Route path="/login" element={ <Login /> } />
                     <Route path="/sign-up" element={ <Signup /> } />
                     <Route path="/forgot-password" element={ <ResetPassword /> } />
