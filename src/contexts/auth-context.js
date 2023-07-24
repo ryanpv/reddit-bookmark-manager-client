@@ -64,11 +64,18 @@ export function AuthProvider({ children }) {
       });
   };
 
-  function logout() {
-    setCurrentUser("")
-    setCategories([])
-    console.log("user signed out");
-    return signOut(auth)
+  async function logout() {
+    try {
+      await fetch(`${ serverUrl }/logout`, {
+        method: "DELETE"
+      });
+      setCurrentUser("")
+      setCategories([])
+  
+      return signOut(auth)
+    } catch (err) {
+      console.log(err)
+    }
   };
 
   function resetPassword(email) {

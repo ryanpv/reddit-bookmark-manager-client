@@ -171,7 +171,7 @@ console.log("curr user: ", currentUser);
                 </ul>
                 <hr></hr>
                 <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-                  <CategoryList categories={ categories } setCategories={ setCategories }/>
+                  { currentUser !== "" ? <CategoryList categories={ categories } setCategories={ setCategories }/> : null }
                 </ul>
               </div>
           </div>

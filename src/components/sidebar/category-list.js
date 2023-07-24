@@ -68,14 +68,14 @@ function CategoryList({ categories, setCategories }) { // states are [categories
   };
 
   function getList() {
-    // "if()" check needed to be done otherwise React will try to map the null categories state and throw error
-    // can also do conditional check where the function is called exactly
-    if (categories.length) {
+    if (currentUser !== "" && categories.length) {
       return categories.map((category) => {
         return (
             <CategoryMapping category={ category } key={ category._id } delCategory={ () => delCategory(category.categoryName) } />
           )
         })
+      } else {
+        setCategories([])
       }
     };
 
@@ -104,7 +104,7 @@ function CategoryList({ categories, setCategories }) { // states are [categories
     the values and not render anything */}
     { categories.length ? 
       <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-        { getList() }
+        { currentUser !== "" ? getList() : null }
       </ul>
       : null 
     }
