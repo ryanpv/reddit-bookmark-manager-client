@@ -12,6 +12,7 @@ import ResetPassword from "./components/account/reset-password";
 import RedditPosts from "./components/views/reddit-posts";
 import LogCallback from "./components/views/log-callback";
 import RedditSearchResults from "./components/views/reddit-search-results";
+import CategoryContent from "./components/views/category-content";
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
                     <Route path="/login" element={ <Login /> } />
                     <Route path="/sign-up" element={ <Signup /> } />
                     <Route path="/forgot-password" element={ <ResetPassword /> } />
+                    { currentUser !== "" ? <Route path="/user/category/:params" element={ <CategoryContent /> } /> : null }
                   </Routes>
         
                 </div>

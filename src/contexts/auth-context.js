@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
   const [searchResponse, setSearchResponse] = React.useState([])
   const [categoryIdData, setCategoryIdData] = React.useState("")
   const [currentPage, setCurrentPage] = React.useState(1)
-  const [documentCount, setDocumentCount] = React.useState(0);
+  const [bookmarksIndex, setbookmarksIndex] = React.useState(0);
   const [userEmailStore, setUserEmailStore] = useState("")
   const [error, setError] = useState('');
   const [loginAttempts, setLoginAttempts] = useState(1)
@@ -71,6 +71,7 @@ export function AuthProvider({ children }) {
       });
       setCurrentUser("")
       setCategories([])
+      setCategoryIdData("")
   
       return signOut(auth)
     } catch (err) {
@@ -128,8 +129,8 @@ export function AuthProvider({ children }) {
 
 
   const value = {
-    documentCount,
-    setDocumentCount,
+    documentCount: bookmarksIndex,
+    setDocumentCount: setbookmarksIndex,
     currentPage,
     setCurrentPage,
     categoryIdData,

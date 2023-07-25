@@ -6,6 +6,7 @@ import { useAuth } from "../../contexts/auth-context";
 import { Button, Nav, ButtonGroup } from "react-bootstrap";
 import DeleteModal from "../modals/delete-modal";
 // import CategoryContent from "./categoryContent";
+// import SyncLoader from "react-spinners/SyncLoader";
 
 function CategoryList({ categories, setCategories }) { // states are [categories, setCategories]
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
@@ -16,6 +17,7 @@ function CategoryList({ categories, setCategories }) { // states are [categories
   const [categoryName, setCategoryName] = React.useState(""); // Value of button, which is the category name
   const [delInputValue, setDelInputValue] = React.useState({ categoryValue: "" }); // Input value from the delete modal
   const [show, setShow] = React.useState(false); // state for modals
+  // const [loading, setLoading] = React.useState(false);
   const handleClose = () => setShow(false);
   
 
@@ -57,6 +59,7 @@ function CategoryList({ categories, setCategories }) { // states are [categories
         body: JSON.stringify({ categoryName: categoryName }),
       });
 
+      // Filter out removed category instead of fetching DB twice
       const newList = categories.filter((category) => category.categoryName !== categoryName);
       setCategories(newList);
       navigate("/")
@@ -95,17 +98,19 @@ function CategoryList({ categories, setCategories }) { // states are [categories
     setCategoryIdData({categoryName, categoryId})
     setDocumentCount(0)
 
-    navigate(`/admin/category/${categoryName.replace(/ /g, "-")}`)
+    navigate(`/user/category/${categoryName.replace(/ /g, "-")}`)
   };
 
   return (
     <>
     {/* must return function call here so the component actually renders the results. otherwise, it will only return
     the values and not render anything */}
-    { categories.length ? 
-      <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-        { currentUser !== "" ? getList() : null }
-      </ul>
+    { 
+    // loading ? <SyncLoader color='#0d6efd' size={15} loading={loading} /> :
+      categories.length ? 
+        <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+          { currentUser !== "" ? getList() : null }
+        </ul>
       : null 
     }
 

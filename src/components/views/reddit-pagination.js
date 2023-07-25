@@ -6,8 +6,10 @@ export default function Pagination({ postsPerPage, totalPosts }) {
   const { setCurrentPage, setDocumentCount } = useAuth();
   const pageNumbers = [];
   const paginate = pageNumber => {
+    console.log("page number: ", pageNumber);
     const indexOfLastPost = pageNumber * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    console.log("first index" , indexOfFirstPost);
     setCurrentPage(pageNumber)
     setDocumentCount(indexOfFirstPost)
   }

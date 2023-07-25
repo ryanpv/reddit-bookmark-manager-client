@@ -5,6 +5,7 @@ import { Button, InputGroup, Form } from 'react-bootstrap';
 import { useUserContext } from '../../contexts/user-context';
 import { PostModal } from '../modals/save-post-modal';
 import Pagination from './reddit-pagination';
+import SyncLoader from 'react-spinners/SyncLoader';
 
 export default function RedditPosts() {
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
@@ -22,11 +23,12 @@ export default function RedditPosts() {
   const [searchSavedPosts, setSearchSavedPosts] = React.useState([])
   const [postData, setPostData] = React.useState({})
   const [postItem, setPostItem] = React.useState({ categoryName: "" });
-   const [postsPerPage, setPostsPerPage] = React.useState(5); // State for how many posts per page to show
-   const indexOfLastPost = currentPage * postsPerPage;
-   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-   const paginatedPosts = savedList?.slice(indexOfFirstPost, indexOfLastPost); // Pagination by using slice() on array for fetched posts - returns sliced data
-   const savedPostsRef = useRef();
+  const [postsPerPage, setPostsPerPage] = React.useState(5); // State for how many posts per page to show
+  const [loading, setLoading] = React.useState(false);
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const paginatedPosts = savedList?.slice(indexOfFirstPost, indexOfLastPost); // Pagination by using slice() on array for fetched posts - returns sliced data
+  const savedPostsRef = useRef();
 
   const FullList = (props) => { 
 
@@ -93,7 +95,7 @@ export default function RedditPosts() {
     .then(res => res)
     .then(data => data.json())
     .catch((error) => console.log(error))
-
+    
     setSavedList(fetchRequest)
   };
 
@@ -110,6 +112,7 @@ export default function RedditPosts() {
 
   // btnClick() will store the value into state, which we can then use to pass info to submitBookmark()
   const btnClick = async(value) => { 
+    console.log("value: ", value);
     await setShow(show => !show);
     await setPostData(value);
   };
@@ -148,6 +151,8 @@ export default function RedditPosts() {
 
   return (
     <>
+      { loading ? <SyncLoader color='#0d6efd' size={15} loading={loading} /> : 
+      <>
       { currentUser ?
       <>
         <Button variant="warning" size="md" onClick={ () => { openLogin() } }>Reddit Login</Button>{ <i> Login to Reddit to see your saved posts. (Click on the 'Load Bookmarks' button after logging into reddit)</i> }
@@ -182,6 +187,8 @@ export default function RedditPosts() {
         <Pagination postsPerPage={postsPerPage} totalPosts={savedList?.length} />
       </>
       : 'PLEASE LOGIN' }
+      </>
+      }
 
       <datalist id='categoryName'>
         { categories?.map(results => { return (<option key={results._id}>{results.categoryName}</option> ) }) }

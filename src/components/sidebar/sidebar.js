@@ -9,7 +9,7 @@ import Login from "../account/login.js";
 import AppNavbar from "../navbars/navbar.js";
 import ResetPassword from "../account/reset-password.js";
 import CategoryList from "./category-list.js";
-
+import SyncLoader from "react-spinners/SyncLoader.js";
 
 function Sidebar({ color, image, routes }) { // 'routes' parameter is reference to the routes prop from "/Sidebar.js" to share the routes array data
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
@@ -23,37 +23,40 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
   const token = currentUser && currentUser.accessToken;
   const newCategory = document.getElementById("new-category");
   const categorySearch = document.getElementById("inputSearch");
-  const [confirmValue, setConfirmValue] = useState("");
+  const [confirmValue, setConfirmValue] = useState(""); // useEffect dependency to rerender app when new category added
   const [categoryInputValue, setCategoryInputValue] = useState({ categoryName: "" });
   const activeRoute = (routeName) => {
     return location.pathname.indexOf(routeName) > -1 ? "active" : "";
   };
   const [newCategoryInput, setNewCategoryInput] = useState(true); // to reveal input to add new category
   const [categorySearchState, setCategorySearchState] = useState(true);
-
+  const [loading, setLoading] = useState(false)
 
 //////////////////////////////////////////
 console.log("curr user: ", currentUser);
   React.useEffect(() => {
     async function getCategoryList() {
       if(currentUser !== "" || currentUser !== null) {
-      const response = await fetch(`${ serverUrl }/bookmarker/category-list`, {
-        credentials: "include",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-      const categoryRecords = await response.json();
+        setLoading(true);
+        const response = await fetch(`${ serverUrl }/bookmarker/category-list`, {
+          credentials: "include",
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
+        const categoryRecords = await response.json();
 
-      setCategories(categoryRecords)
-    } else { 
-    console.log("No user currently logged in")
-    setCategories([]) 
-    }
+        setCategories(categoryRecords)
+        setLoading(false);
+      } else { 
+      console.log("No user currently logged in")
+      setCategories([]) 
+      setLoading(false);
+      }
   };
 
   getCategoryList()
-  }, [serverUrl, currentUser]);
+  }, [serverUrl, currentUser, confirmValue]);
 
   function handleAddCategory(value) {
     return setCategoryInputValue((prevCategories) => {
@@ -72,6 +75,8 @@ console.log("curr user: ", currentUser);
       setNewCategoryInput(addNewCategory => !addNewCategory)
 
     } else if (duplicateCheck.length < 1 && categoryInputValue.categoryName !== "") {
+      setLoading(true);
+
       await fetch(`${ serverUrl }/bookmarker/category-list`, {
         method: "POST",
         credentials: "include",
@@ -82,6 +87,7 @@ console.log("curr user: ", currentUser);
       })
       .catch(error => {
         console.log(error);
+        setLoading(false);
         return;
       });
 
@@ -91,14 +97,15 @@ console.log("curr user: ", currentUser);
       // Reset state of "+ Add New Category" button after input submission
       setNewCategoryInput(addNewCategory => !addNewCategory)
       // Reset input value of "+ Add New Category" to empty
+      setConfirmValue(categoryInputRef.current.value)
       categoryInputRef.current.value = ""
+      setLoading(false);
 
-  } else {
-    categoryInputRef.current.value = ""
-    alert("Category name ALREADY exists.")
-    
-  }
-  
+    } else {
+      categoryInputRef.current.value = ""
+      alert("Category name ALREADY exists.")
+      
+    }
   categoryInputRef.current.value = null
   }
 
@@ -170,9 +177,11 @@ console.log("curr user: ", currentUser);
                   </li>
                 </ul>
                 <hr></hr>
-                <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-                  { currentUser !== "" ? <CategoryList categories={ categories } setCategories={ setCategories }/> : null }
-                </ul>
+                { loading ? <SyncLoader color='#0d6efd' size={15} loading={loading} /> : 
+                  <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+                    { currentUser !== "" ? <CategoryList categories={ categories } setCategories={ setCategories }/> : null }
+                  </ul>
+                }
               </div>
           </div>
       </aside>
