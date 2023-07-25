@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth-context';
 import { PostModal } from '../modals/save-post-modal';
 import { Button } from 'react-bootstrap';
-import Pagination from './reddit-pagination';
+import Pagination from './paginator';
 
 export default function RedditSearchResults() {
   const { searchResponse, currentPage, categories, currentUser } = useAuth();

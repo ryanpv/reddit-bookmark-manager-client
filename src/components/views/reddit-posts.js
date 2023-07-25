@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/auth-context';
 import { Button, InputGroup, Form } from 'react-bootstrap';
 import { useUserContext } from '../../contexts/user-context';
 import { PostModal } from '../modals/save-post-modal';
-import Pagination from './reddit-pagination';
+import Pagination from './paginator';
 import SyncLoader from 'react-spinners/SyncLoader';
 
 export default function RedditPosts() {

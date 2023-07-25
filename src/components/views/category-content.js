@@ -3,7 +3,7 @@ import { Card, Container, Row, Col, Button, Nav } from "react-bootstrap";
 import { useParams, useLocation, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
 import { useUserContext } from "../../contexts/user-context";
-import Pagination from "./reddit-pagination";
+import Pagination from "./paginator";
 import SyncLoader from "react-spinners/SyncLoader";
 
 // PASS IN PROPS
