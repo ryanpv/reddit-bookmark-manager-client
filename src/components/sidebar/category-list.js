@@ -11,7 +11,7 @@ import DeleteModal from "../modals/delete-modal";
 function CategoryList({ categories, setCategories }) { // states are [categories, setCategories]
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
   const navigate = useNavigate();
-  const { currentUser, setCategoryIdData, setCurrentPage, setDocumentCount } = useAuth()
+  const { currentUser, setCategoryIdData, setCurrentPage, setBookmarksIndex } = useAuth()
   const token = currentUser && currentUser.accessToken
   // const { categoryContent, setCategoryContent } = useRedditAuth();
   const [categoryName, setCategoryName] = React.useState(""); // Value of button, which is the category name
@@ -96,7 +96,7 @@ function CategoryList({ categories, setCategories }) { // states are [categories
     // console.log("clicked on category", categoryName);
     // await setCategoryContent(docRecord)
     setCategoryIdData({categoryName, categoryId})
-    setDocumentCount(0)
+    setBookmarksIndex(0)
 
     navigate(`/user/category/${categoryName.replace(/ /g, "-")}`)
   };

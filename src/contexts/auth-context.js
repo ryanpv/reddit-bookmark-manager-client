@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
   const [searchResponse, setSearchResponse] = React.useState([])
   const [categoryIdData, setCategoryIdData] = React.useState("")
   const [currentPage, setCurrentPage] = React.useState(1)
-  const [bookmarksIndex, setbookmarksIndex] = React.useState(0);
+  const [bookmarksIndex, setBookmarksIndex] = React.useState(0);
   const [userEmailStore, setUserEmailStore] = useState("")
   const [error, setError] = useState('');
   const [loginAttempts, setLoginAttempts] = useState(1)
@@ -129,8 +129,8 @@ export function AuthProvider({ children }) {
 
 
   const value = {
-    documentCount: bookmarksIndex,
-    setDocumentCount: setbookmarksIndex,
+    bookmarksIndex,
+    setBookmarksIndex,
     currentPage,
     setCurrentPage,
     categoryIdData,

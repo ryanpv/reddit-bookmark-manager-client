@@ -12,7 +12,7 @@ const CategoryContent = () => {
   const location = useLocation();
   const { params } = useParams();
   const urlParams = params.replace(/-/g, " ");
-  const { currentUser,  categoryIdData, setCategoryIdData, categories, currentPage, bookmarksIndex } = useAuth();
+  const { currentUser,  categoryIdData, categories, currentPage, bookmarksIndex, setBookmarksIndex } = useAuth();
   const { categoryContent, setCategoryContent } = useUserContext();
   const baseUrl = 'https://www.reddit.com';
   const [imageContent, setImageContent] = React.useState({});
@@ -20,11 +20,11 @@ const CategoryContent = () => {
   const [textData, setTextData] = React.useState("");
   const [videoContent, setVideoContent] = React.useState({});
   const [NSFWContent, setNSFWContent] = React.useState({});
-  // const match = useRouteMatch();
-  const [postsPerPage, setPostsPerPage] = React.useState(5);
+  const [postsPerPage] = React.useState(5);
   const [commentBody, setCommentBody] = React.useState({})
   const [showText, setShowText] = React.useState(false)
   const [loading, setLoading] = React.useState(false);
+
 
   ////////////
   React.useEffect(() => {
@@ -32,16 +32,16 @@ const CategoryContent = () => {
       const filterCategoryData = await categories.filter((category) => category.categoryName.toUpperCase() === urlParams.toUpperCase());
       const initialObj = {};
       const getCategoryId = await filterCategoryData.reduce((acc, curr) => (acc, curr), initialObj);
-      // setCategoryIdData(getCategoryId);
+
       if (filterCategoryData.length < 1) {
-        // console.log('non-existent category');
+        console.log('non-existent category');
         // history.push('/admin/profile');
         // create component that will navigate to a page does not exist**********
       } else if (getCategoryId.categoryName) {
         // console.log(getCategoryId);
         // const skipNum = parseInt(documentCount)
         setLoading(true);
-        const singleDoc = await fetch(`${ serverUrl }/bookmarker/category-list/${ getCategoryId._id }/${ bookmarksIndex }`, { // documentCount is 
+        const singleDoc = await fetch(`${ serverUrl }/bookmarker/category-list/${ getCategoryId._id }/${ bookmarksIndex }`, {
           credentials: "include",
           headers: {
             "Content-type": "application/json"
@@ -56,10 +56,10 @@ const CategoryContent = () => {
       setLoading(false)
     };
     getContentData();
-    
-  }, [location.pathname, currentPage, bookmarksIndex]);
 
-    //////////////////////
+  }, [location.pathname, currentPage, bookmarksIndex, categories, serverUrl, urlParams, setCategoryContent]);
+
+  //////////////////////
   const BookmarkList = (props) => (
     <tr>
       {/* <td>{ props.bookmark.bookmarkItem }</td> */}
@@ -78,12 +78,13 @@ const CategoryContent = () => {
 
 
   async function deleteBookmark(bookmarkId) {
-    await fetch(`https://saveredd-api.onrender.com/remove-bookmark/${bookmarkId}`, {
+    await fetch(`${ serverUrl }/bookmarker/remove-bookmark/${bookmarkId}`, {
       method: "DELETE",
       credentials: "include",
     });
     const updateBookmarkList = categoryContent.categoryData.filter((contentList) => contentList._id !== bookmarkId);
     setCategoryContent((prev) => { return { categoryData: updateBookmarkList, docCount: prev.docCount - 1 } });
+    setBookmarksIndex(prev => prev - 5)
   };
   
   function displayBookmarkList() {
@@ -94,67 +95,67 @@ const CategoryContent = () => {
         )
       })
     } else {
-      return
+      return ;
     }
   };
   
   async function hyperLinkClick(value) { // pass in the prop's pathname
   setShowText(false) // using this state to reduce amount of visible text on each link click from textContent - will allow users to see reduced text each click
 
-  if (value.body !== "") {
-    setCommentBody({body: value.body, author: value.author})
-  } else {
-    setCommentBody({})
-  }
+    if (value.body !== "") {
+      setCommentBody({body: value.body, author: value.author})
+    } else {
+      setCommentBody({})
+    }
 
-  if (!value.over_18 || value.over_18 === "false") {
-  const contentFetch = await 
-  fetch(`${baseUrl}${value.pathName}.json`)
-  .then((response) => response.json())
-  .then((result) => result.map(data => data.data.children));
+    if (!value.over_18 || value.over_18 === "false") {
+    const contentFetch = await 
+    fetch(`${baseUrl}${value.pathName}.json`)
+    .then((response) => response.json())
+    .then((result) => result.map(data => data.data.children));
 
   
-  switch (true) {
-    case ((contentFetch[0][0].data.selftext_html !== null && !contentFetch[0][0].data.post_hint) || contentFetch[0][0].data.post_hint === "self"):
-      // const selfTextData = contentFetch[0][0].data 
-      setLoading(true);
-      setTextData(contentFetch[0][0].data) // .selftext for text
-      setImageContent({})
-      setGalleryContent({})
-      setVideoContent({})
-      setNSFWContent({})
-      setLoading(false);
-      break;
-    case (contentFetch[0][0].data.post_hint === "image" || contentFetch[0][0].data.post_hint === "link"):
-      setLoading(true);
-      setImageContent(contentFetch[0][0].data); // .url for image url
-      setTextData("")
-      setGalleryContent({})
-      setVideoContent({})
-      setNSFWContent({})
-      setLoading(false);
-      break;
-    case (contentFetch[0][0].data.is_gallery):
-      setLoading(true);
-      setGalleryContent(contentFetch[0][0].data) // .url for gallery url
-      setTextData("")
-      setImageContent({})
-      setVideoContent({})
-      setNSFWContent({})
-      setLoading(false);
-      // console.log('tis a gallery');
-      break;
-    case (contentFetch[0][0].data.is_video || contentFetch[0][0].data.post_hint === "rich:video"):
-      setLoading(true);
-      setVideoContent(contentFetch[0][0].data)
-      setGalleryContent({})
-      setTextData("")
-      setImageContent({})
-      setNSFWContent({})
-      setLoading(false);
-      break;
-    default:
-      }
+    switch (true) {
+      case ((contentFetch[0][0].data.selftext_html !== null && !contentFetch[0][0].data.post_hint) || contentFetch[0][0].data.post_hint === "self"):
+        // const selfTextData = contentFetch[0][0].data 
+        setLoading(true);
+        setTextData(contentFetch[0][0].data) // .selftext for text
+        setImageContent({})
+        setGalleryContent({})
+        setVideoContent({})
+        setNSFWContent({})
+        setLoading(false);
+        break;
+      case (contentFetch[0][0].data.post_hint === "image" || contentFetch[0][0].data.post_hint === "link"):
+        setLoading(true);
+        setImageContent(contentFetch[0][0].data); // .url for image url
+        setTextData("")
+        setGalleryContent({})
+        setVideoContent({})
+        setNSFWContent({})
+        setLoading(false);
+        break;
+      case (contentFetch[0][0].data.is_gallery):
+        setLoading(true);
+        setGalleryContent(contentFetch[0][0].data) // .url for gallery url
+        setTextData("")
+        setImageContent({})
+        setVideoContent({})
+        setNSFWContent({})
+        setLoading(false);
+        // console.log('tis a gallery');
+        break;
+      case (contentFetch[0][0].data.is_video || contentFetch[0][0].data.post_hint === "rich:video"):
+        setLoading(true);
+        setVideoContent(contentFetch[0][0].data)
+        setGalleryContent({})
+        setTextData("")
+        setImageContent({})
+        setNSFWContent({})
+        setLoading(false);
+        break;
+      default:
+        }
 
     } else {
       setLoading(true);

@@ -3,15 +3,14 @@ import { useAuth } from '../../contexts/auth-context';
 import { Button } from 'react-bootstrap';
 
 export default function Pagination({ postsPerPage, totalPosts }) {
-  const { setCurrentPage, setDocumentCount } = useAuth();
+  const { setCurrentPage, setBookmarksIndex } = useAuth();
   const pageNumbers = [];
   const paginate = pageNumber => {
-    console.log("page number: ", pageNumber);
     const indexOfLastPost = pageNumber * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    console.log("first index" , indexOfFirstPost);
+
     setCurrentPage(pageNumber)
-    setDocumentCount(indexOfFirstPost)
+    setBookmarksIndex(indexOfFirstPost)
   }
 
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
