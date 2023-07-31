@@ -114,7 +114,7 @@ function CategoryList({ categories, setCategories }) { // states are [categories
       : null 
     }
 
-    <DeleteModal show={ show } handleClose={ handleClose } delCategory={ delCategory}  categoryName={ categoryName } 
+    <DeleteModal show={ show } handleClose={ handleClose } delCategory={ delCategory} categoryName={ categoryName } 
       delInputValue={ delInputValue } setDelInputValue={ setDelInputValue } />
 
     </>

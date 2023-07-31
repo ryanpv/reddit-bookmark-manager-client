@@ -114,6 +114,7 @@ console.log("curr user: ", currentUser);
     setNewCategoryInput(addNewCategory => !addNewCategory)
   }
 
+  // Switches form input state back to button/vice versa
   function searchCategoryList() {
     setCategorySearchState(categoryNameSearch => !categoryNameSearch)
   }
@@ -122,10 +123,9 @@ console.log("curr user: ", currentUser);
     e.preventDefault();
 
     const categoryNameId = categories.length > 0 && categories.map(category => category.categoryName)
-    // console.log(categoryNameId);
 
     if (categoryNameId && categoryNameId.includes(inputSearch.current.value)) {
-      navigate(`/app/category/${inputSearch.current.value}`)
+      navigate(`/user/category/${ inputSearch.current.value.replace(/ /g, "-") }`)
     } else {
       alert("Search is case-sensitive. Please check spelling.")
     }
@@ -185,6 +185,10 @@ console.log("curr user: ", currentUser);
               </div>
           </div>
       </aside>
+
+      <datalist id='categoryName'>
+        { categories?.map(results => { return (<option key={results._id}>{results.categoryName}</option> ) }) }
+      </datalist>
     </>
   );
 }

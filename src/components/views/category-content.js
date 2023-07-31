@@ -10,7 +10,7 @@ import SyncLoader from "react-spinners/SyncLoader";
 const CategoryContent = () => {
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
   const location = useLocation();
-  const { params } = useParams();
+  const { params, id } = useParams();
   const urlParams = params.replace(/-/g, " ");
   const { currentUser,  categoryIdData, categories, currentPage, bookmarksIndex, setBookmarksIndex } = useAuth();
   const { categoryContent, setCategoryContent } = useUserContext();
@@ -25,10 +25,11 @@ const CategoryContent = () => {
   const [showText, setShowText] = React.useState(false)
   const [loading, setLoading] = React.useState(false);
 
-
+console.log("params: ", location);
   ////////////
   React.useEffect(() => {
-    async function getContentData () {
+    async function getCategoryContent () {
+      setLoading(true);
       const filterCategoryData = await categories.filter((category) => category.categoryName.toUpperCase() === urlParams.toUpperCase());
       const initialObj = {};
       const getCategoryId = await filterCategoryData.reduce((acc, curr) => (acc, curr), initialObj);
@@ -55,9 +56,9 @@ const CategoryContent = () => {
       };
       setLoading(false)
     };
-    getContentData();
+    getCategoryContent();
 
-  }, [location.pathname, currentPage, bookmarksIndex, categories, serverUrl, urlParams, setCategoryContent]);
+  }, [location, currentPage, bookmarksIndex, categories, serverUrl, urlParams, setCategoryContent]);
 
   //////////////////////
   const BookmarkList = (props) => (

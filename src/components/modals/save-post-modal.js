@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Button } from 'react-bootstrap'
 
-export function PostModal({show, handleClose, submitBookmark, postItem, setPostItem, postData, categories}) {
+export function PostModal({ show, handleClose, submitBookmark, postItem, setPostItem, postData }) {
   const bookmarkRef = React.useRef("");
 
   async function handleAddBookmark(value) { 
