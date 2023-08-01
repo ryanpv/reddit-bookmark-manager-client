@@ -199,7 +199,7 @@ const CategoryContent = () => {
   return(
     
     <div className="category-content">
-      <h5><b>Current User: </b>{ currentUser ? currentUser.email : "not logged in" }</h5>
+      <h5><b>Current User: </b>{ currentUser ? currentUser : "not logged in" }</h5>
 
       <Container fluid>
         
