@@ -27,14 +27,14 @@ export default function RedditSearchResults() {
         {props.searchResult.pathName ? <Link to={ {pathname: `${baseUrl}${props.searchResult.pathName}`} } target="_blank" onClick={() => alert('opening new tab')}>
             { props.searchResult.title || props.searchResult.link_title }
             </Link> : 
-            <Link to={ {pathname: `${baseUrl}${props.searchResult.permalink}`} } target="_blank" onClick={() => alert('opening new tab')}>
-            { props.searchResult.title || props.searchResult.link_title }
+            <Link to={ `${baseUrl}${props.searchResult.data.permalink}` } target="_blank" onClick={() => alert('opening new tab')}>
+            { props.searchResult.data.title || props.searchResult.data.link_title }
             </Link>}
         </td>
         <td>{ !props.searchResult.categoryName ? 
-              <Button variant="outline-primary" onClick={() => btnClick({ name: props.searchResult.name, pathname: props.searchResult.permalink, title: props.searchResult.title,
-                author: props.searchResult.author, subreddit: props.searchResult.subreddit_name_prefixed, body: props.searchResult.body, link_title: props.searchResult.link_title, 
-                over_18: props.searchResult.over_18 })}
+              <Button variant="outline-primary" onClick={() => btnClick({ name: props.searchResult.data.name, pathname: props.searchResult.data.permalink, title: props.searchResult.data.title,
+                author: props.searchResult.data.author, subreddit: props.searchResult.data.subreddit_name_prefixed, body: props.searchResult.data.body, link_title: props.searchResult.data.link_title, 
+                over_18: props.searchResult.data.over_18 })}
                 >+</Button> : null }
         </td>
       </tr>
@@ -78,7 +78,7 @@ export default function RedditSearchResults() {
     if (currentPosts.length > 0) {
       return currentPosts.map(searchResult => {
         return (
-            <SearchResultData searchResult={searchResult.data} key={searchResult.data.permalink} />
+            <SearchResultData searchResult={searchResult} key={searchResult.permalink} />
         )
       }
     )} 

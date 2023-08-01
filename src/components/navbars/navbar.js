@@ -5,7 +5,8 @@ import { Redirect, useNavigate, NavLink } from 'react-router-dom'
 
 function AppNavbar() {
   const { currentUser, setSearchResponse, logout, setCurrentPage } = useAuth();
-  const token = currentUser && currentUser.accessToken
+  const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
+
   
   const navigate = useNavigate();
   const searchRef = React.useRef('')
@@ -14,7 +15,7 @@ function AppNavbar() {
   async function searchSubmit(e) {
     e.preventDefault();
     // redirect to page with all results
-    navigate(`/app/search-results?${searchRef.current.value}`)
+    navigate(`/search-results?${searchRef.current.value}`)
     // console.log(searchRef.current.value.split(" "));
     setCurrentPage(1)
     if (searchRef.current.value === "" || !/\S/.test(searchRef.current.value)) 
@@ -24,13 +25,15 @@ function AppNavbar() {
     
   } else {
 
-    const bookmarkSearch = await fetch(`https://saveredd-api.onrender.com/bookmarks/${searchRef.current.value}`, {
+    const bookmarkSearch = await fetch(`${ serverUrl }/bookmarker/saved-bookmarks/${ searchRef.current.value }`, {
+      credentials: "include",
       headers: {
-        Authorization: `Bearer ${token}`
+        "Content-type": "application/json"
       },
-    })
+    });
+
     const response = await bookmarkSearch.json()
-     setSearchResponse(response)
+    setSearchResponse(response)
     searchRef.current.value = null
     setSearchItem("")
   }

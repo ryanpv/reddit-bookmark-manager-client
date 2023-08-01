@@ -62,6 +62,8 @@ export default function RedditPosts() {
       } 
     return post.data.link_title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
   })
+  console.log("search q: ", savedPostsRef.current.value);
+  console.log("result: ", savedPostsSearch);
 
     setSearchResponse(savedPostsSearch)
   };
@@ -95,7 +97,7 @@ export default function RedditPosts() {
     .then(res => res)
     .then(data => data.json())
     .catch((error) => console.log(error))
-    
+    console.log('savedlist: ', fetchRequest);
     setSavedList(fetchRequest)
   };
 

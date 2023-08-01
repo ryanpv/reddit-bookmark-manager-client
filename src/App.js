@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AppNavbar from "./components/navbars/navbar.js";
 import { useAuth } from "./contexts/auth-context.js";
 import Sidebar from "./components/sidebar/sidebar.js";
@@ -30,11 +30,10 @@ function App() {
                     <Route path="/user-reddit-posts" element={ <RedditPosts /> } />
                     <Route path="/log_callback" element={ <LogCallback /> } />
                     <Route path="/search-results" element={ <RedditSearchResults /> } />
-                    { <Route path="/login" element={ <Login /> } /> }
+                    <Route path="/login" element={ currentUser !== "" ? <Navigate to="/" /> : <Login /> } />
                     <Route path="/sign-up" element={ <Signup /> } />
                     <Route path="/forgot-password" element={ <ResetPassword /> } />
-                    { currentUser !== "" ? <Route path="/user/category/:params" element={ <CategoryContent /> } /> 
-                    : <Route path="/user/category/:params" element={ <UnauthorizedPage /> } /> }
+                    <Route path="/user/category/:params" element={ currentUser !== "" ? <CategoryContent /> : <UnauthorizedPage /> } />
                   </Routes>
         
                 </div>

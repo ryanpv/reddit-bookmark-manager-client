@@ -16,13 +16,13 @@ export default function Login() {
       console.log('login error: ', err);
       return setError("Login error")
     }
-  }
+  };
 
   function userEmailRef (value) {
     return setUserEmailStore((prev) => {
       return { ...prev, ...value }
     })
-  }
+  };
 
 
   return (

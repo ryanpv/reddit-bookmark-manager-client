@@ -152,37 +152,38 @@ console.log("curr user: ", currentUser);
                       </a>
                   </li>
               </ul>
-
-              <div className="bookmark-funcs">
-                <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-                  <li>
-              { newCategoryInput ? 
-                <Button size="sm" className="w-75 text-center mt-2 mb-1" variant="outline-primary" onClick={addCategory}>+ Add New Category</Button> 
-                : 
-                <Form onSubmit={submitNewCategory}>
-                  <Form.Control maxLength="40" size="sm" id="new-category" ref={ categoryInputRef } type='text' 
-                  value={categoryInputValue.categoryName} 
-                  onChange={ (e) => handleAddCategory({ categoryName: e.target.value }) }
-                  placeholder="Type New Category Name"
-                  />
-                </Form> }
-                  </li>
-                  <li>
-                { categorySearchState ? 
-                <Button className="w-75 text-center mt-1 mb-2" size="sm" variant="outline-primary" onClick={searchCategoryList}>Search Category List</Button>
-                : 
-                <Form onSubmit={submitCategorySearch}>
-                  <Form.Control type="text" list="categoryName" ref={inputSearch} placeholder="Search Category Name" />
-                </Form> }
-                  </li>
-                </ul>
-                <hr></hr>
-                { loading ? <SyncLoader color='#0d6efd' size={15} loading={loading} /> : 
+                <div className="bookmark-funcs">
+              { currentUser !== "" ?
                   <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
-                    { currentUser !== "" ? <CategoryList categories={ categories } setCategories={ setCategories }/> : null }
+                    <li>
+                { newCategoryInput ? 
+                  <Button size="sm" className="w-75 text-center mt-2 mb-1" variant="outline-primary" onClick={addCategory}>+ Add New Category</Button> 
+                  : 
+                  <Form onSubmit={submitNewCategory}>
+                    <Form.Control maxLength="40" size="sm" id="new-category" ref={ categoryInputRef } type='text' 
+                    value={categoryInputValue.categoryName} 
+                    onChange={ (e) => handleAddCategory({ categoryName: e.target.value }) }
+                    placeholder="Type New Category Name"
+                    />
+                  </Form> }
+                    </li>
+                    <li>
+                  { categorySearchState ? 
+                  <Button className="w-75 text-center mt-1 mb-2" size="sm" variant="outline-primary" onClick={searchCategoryList}>Search Category List</Button>
+                  : 
+                  <Form onSubmit={submitCategorySearch}>
+                    <Form.Control type="text" list="categoryName" ref={inputSearch} placeholder="Search Category Name" />
+                  </Form> }
+                    </li>
                   </ul>
-                }
-              </div>
+                  : null }
+                  <hr></hr>
+                  { loading ? <SyncLoader color='#0d6efd' size={15} loading={loading} /> : 
+                    <ul className="nav nav-pills flex-sm-column flex-row mb-auto justify-content-between text-truncate">
+                      { currentUser !== "" ? <CategoryList categories={ categories } setCategories={ setCategories }/> : null }
+                    </ul>
+                  }
+                </div>
           </div>
       </aside>
 
