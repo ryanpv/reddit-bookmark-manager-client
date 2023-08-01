@@ -100,6 +100,7 @@ const CategoryContent = () => {
   };
   
   async function hyperLinkClick(value) { // pass in the prop's pathname
+  setLoading(true);
   setShowText(false) // using this state to reduce amount of visible text on each link click from textContent - will allow users to see reduced text each click
 
     if (value.body !== "") {
@@ -118,41 +119,32 @@ const CategoryContent = () => {
     switch (true) {
       case ((contentFetch[0][0].data.selftext_html !== null && !contentFetch[0][0].data.post_hint) || contentFetch[0][0].data.post_hint === "self"):
         // const selfTextData = contentFetch[0][0].data 
-        setLoading(true);
         setTextData(contentFetch[0][0].data) // .selftext for text
         setImageContent({})
         setGalleryContent({})
         setVideoContent({})
         setNSFWContent({})
-        setLoading(false);
         break;
       case (contentFetch[0][0].data.post_hint === "image" || contentFetch[0][0].data.post_hint === "link"):
-        setLoading(true);
         setImageContent(contentFetch[0][0].data); // .url for image url
         setTextData("")
         setGalleryContent({})
         setVideoContent({})
         setNSFWContent({})
-        setLoading(false);
         break;
       case (contentFetch[0][0].data.is_gallery):
-        setLoading(true);
         setGalleryContent(contentFetch[0][0].data) // .url for gallery url
         setTextData("")
         setImageContent({})
         setVideoContent({})
         setNSFWContent({})
-        setLoading(false);
-        // console.log('tis a gallery');
         break;
       case (contentFetch[0][0].data.is_video || contentFetch[0][0].data.post_hint === "rich:video"):
-        setLoading(true);
         setVideoContent(contentFetch[0][0].data)
         setGalleryContent({})
         setTextData("")
         setImageContent({})
         setNSFWContent({})
-        setLoading(false);
         break;
       default:
         }
@@ -180,6 +172,7 @@ const CategoryContent = () => {
         setLoading(false);
       }
     }
+    setLoading(false);
   };
 
   function expandText(e) {
@@ -191,24 +184,22 @@ const CategoryContent = () => {
     if (textBody && textBody.length > 2500) {
       return (
         <>
-        <p>
-        {textBody.slice(0, 2500)}<Button onClick={(e) => expandText(e)} size="xs" variant="link">...expand</Button>
-        </p>
+          <p>
+            { textBody.slice(0, 2500) }<Button onClick={(e) => expandText(e)} size="xs" variant="link">...expand</Button>
+          </p>
         </>
       )
     }
     return (
-      <p>{textBody}</p>
+      <p>{ textBody }</p>
     )
   };
-
 
 
   return(
     
     <div className="category-content">
       <h5><b>Current User: </b>{ currentUser ? currentUser.email : "not logged in" }</h5>
-
 
       <Container fluid>
         
@@ -233,7 +224,7 @@ const CategoryContent = () => {
                           </tr>
                       </thead>
                       { loading ? <SyncLoader color='#0d6efd' size={15} loading={loading} /> : 
-                          <tbody>{ categoryContent.categoryData ? displayBookmarkList() : null }</tbody>
+                          <tbody>{ displayBookmarkList() }</tbody>
                         }
                     </table>
                   </Card.Body>

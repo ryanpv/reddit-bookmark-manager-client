@@ -6,45 +6,32 @@ import { useNavigate, NavLink } from 'react-router-dom'
 function AppNavbar() {
   const { currentUser, setSearchResponse, logout, setCurrentPage } = useAuth();
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
-
-  
   const navigate = useNavigate();
-  const searchRef = React.useRef('')
-  const [setSearchItem] = React.useState("")
+  const searchRef = React.useRef('');
 
   async function searchSubmit(e) {
     e.preventDefault();
     // redirect to page with all results
     navigate(`/search-results?${searchRef.current.value}`)
-    // console.log(searchRef.current.value.split(" "));
+
     setCurrentPage(1)
-    if (searchRef.current.value === "" || !/\S/.test(searchRef.current.value)) 
-    { alert("Please type in a search query")
-    searchRef.current.value = null
-    setSearchItem("")
-    
-  } else {
+    if (searchRef.current.value === "" || !/\S/.test(searchRef.current.value)) { 
+      alert("Please type in a search query")
+      searchRef.current.value = null
 
-    const bookmarkSearch = await fetch(`${ serverUrl }/bookmarker/saved-bookmarks/${ searchRef.current.value }`, {
-      credentials: "include",
-      headers: {
-        "Content-type": "application/json"
-      },
-    });
+    } else {
+      const bookmarkSearch = await fetch(`${ serverUrl }/bookmarker/saved-bookmarks/${ searchRef.current.value }`, {
+        credentials: "include",
+        headers: {
+          "Content-type": "application/json"
+        },
+      });
 
-    const response = await bookmarkSearch.json()
-    setSearchResponse(response)
-    searchRef.current.value = null
-    setSearchItem("")
-  }
-}
-
-
-  function handleBookmarkSearch(value) {
-    return setSearchItem((prev) => {
-      return { ...prev, ...value }
-    })
-  }
+      const response = await bookmarkSearch.json()
+      setSearchResponse(response)
+      searchRef.current.value = null
+    }
+  };
 
   async function handleLogout(e) {
     e.preventDefault()
@@ -54,8 +41,7 @@ function AppNavbar() {
     } catch {
       alert('failed to log out')
     }
-  }
-
+  };
 
   return (
     <>
@@ -74,7 +60,7 @@ function AppNavbar() {
                 placeholder="Search For Bookmark"
                 aria-label="Search"
                 ref={searchRef}
-                onChange={ (e) => handleBookmarkSearch(e.target.value)}
+                // onChange={ (e) => handleBookmarkSearch(e.target.value)}
                 />
             </Form>
               {/* <Button size="" variant="outline-primary" onClick={(e) => searchSubmit(e)}>Search</Button> */}    

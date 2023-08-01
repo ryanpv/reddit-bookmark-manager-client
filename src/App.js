@@ -11,6 +11,7 @@ import LogCallback from "./components/views/log-callback";
 import RedditSearchResults from "./components/views/reddit-search-results";
 import CategoryContent from "./components/views/category-content";
 import UnauthorizedPage from "./components/views/unauthorized-page.js";
+import HomePage from "./components/views/home-page.js";
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <div className="col overflow-auto h-100">
                 <div className="bg-light border rounded-3 p-3">
                   <Routes>
+                    <Route path="/" element={ <HomePage /> } />
                     <Route path="/user-reddit-posts" element={ <RedditPosts /> } />
                     <Route path="/log_callback" element={ <LogCallback /> } />
                     <Route path="/search-results" element={ <RedditSearchResults /> } />

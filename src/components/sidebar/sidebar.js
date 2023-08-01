@@ -21,7 +21,6 @@ function Sidebar({ color, image, routes }) { // 'routes' parameter is reference 
   const [loading, setLoading] = useState(false)
 
 //////////////////////////////////////////
-console.log("curr user: ", currentUser);
   React.useEffect(() => {
     async function getCategoryList() {
       if(currentUser !== "" || currentUser !== null) {
@@ -44,7 +43,7 @@ console.log("curr user: ", currentUser);
   };
 
   getCategoryList()
-  }, [serverUrl, currentUser, confirmValue]);
+  }, [serverUrl, currentUser, confirmValue, setCategories]);
 
   function handleAddCategory(value) {
     return setCategoryInputValue((prevCategories) => {
