@@ -6,11 +6,11 @@ import { Button } from 'react-bootstrap';
 import Pagination from './paginator';
 
 export default function RedditSearchResults() {
-  const { searchResponse, currentPage, categories, currentUser } = useAuth();
-  const clientUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_CLIENT : "http://localhost:3000";
+  const { searchResponse, currentPage, categories } = useAuth();
+  // const clientUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_CLIENT : "http://localhost:3000";
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
   const baseUrl = 'https://www.reddit.com'
-  const [postsPerPage, setPostsPerPage] = React.useState(5);
+  const [postsPerPage] = React.useState(5);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = searchResponse?.slice(indexOfFirstPost, indexOfLastPost);

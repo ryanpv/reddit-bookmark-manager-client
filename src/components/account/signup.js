@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Button, Card, Form, Alert, Container } from 'react-bootstrap';
+import { Button, Card, Form, Container } from 'react-bootstrap';
 import { useAuth } from "../../contexts/auth-context.js"
 import { Link } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ export default function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { signup, error, setError } = useAuth();
+  const { signup, setError } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

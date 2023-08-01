@@ -1,19 +1,14 @@
-import React, { useEffect, useContext } from "react";
-import { useNavigate, Redirect, useLocation, NavLink } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth-context";
-// import { UserContext } from "./UserContext";
-// import { useRedditAuth } from "./UserContext";
-import { Button, Nav, ButtonGroup } from "react-bootstrap";
+import { Button, ButtonGroup } from "react-bootstrap";
 import DeleteModal from "../modals/delete-modal";
-// import CategoryContent from "./categoryContent";
-// import SyncLoader from "react-spinners/SyncLoader";
+
 
 function CategoryList({ categories, setCategories }) { // states are [categories, setCategories]
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
   const navigate = useNavigate();
-  const { currentUser, setCategoryIdData, setCurrentPage, setBookmarksIndex } = useAuth()
-  const token = currentUser && currentUser.accessToken
-  // const { categoryContent, setCategoryContent } = useRedditAuth();
+  const { currentUser, setCategoryIdData, setBookmarksIndex } = useAuth()
   const [categoryName, setCategoryName] = React.useState(""); // Value of button, which is the category name
   const [delInputValue, setDelInputValue] = React.useState({ categoryValue: "" }); // Input value from the delete modal
   const [show, setShow] = React.useState(false); // state for modals
@@ -92,7 +87,7 @@ function CategoryList({ categories, setCategories }) { // states are [categories
     // )
     // const docRecord = await singleDoc.json();
     // const categoryNameArr = docRecord?.map(el => el.categoryName)
-    const categoryUrl = categoryName.replace(/ /g, "-")
+    // const categoryUrl = categoryName.replace(/ /g, "-")
     // console.log("clicked on category", categoryName);
     // await setCategoryContent(docRecord)
     setCategoryIdData({categoryName, categoryId})

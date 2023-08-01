@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth-context';
 import { Button, InputGroup, Form } from 'react-bootstrap';
 import { useUserContext } from '../../contexts/user-context';
@@ -14,17 +14,14 @@ export default function RedditPosts() {
   const clientid = process.env.REACT_APP_REDDIT_ID; // Reddit client ID
   const baseUrl = 'https://www.reddit.com'
   const navigate = useNavigate();
-  const location = useLocation();
   const { currentUser, categories, currentPage, setCurrentPage, setSearchResponse } = useAuth();
-  const token = currentUser && currentUser.accessToken
   const bookmarkRef = useRef("");
   const [show, setShow] = React.useState(false);
   const handleClose = () => setShow(false);
-  const [searchSavedPosts, setSearchSavedPosts] = React.useState([])
   const [postData, setPostData] = React.useState({})
   const [postItem, setPostItem] = React.useState({ categoryName: "" });
-  const [postsPerPage, setPostsPerPage] = React.useState(5); // State for how many posts per page to show
-  const [loading, setLoading] = React.useState(false);
+  const [postsPerPage] = React.useState(5); // State for how many posts per page to show
+  const [loading] = React.useState(false);
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const paginatedPosts = savedList?.slice(indexOfFirstPost, indexOfLastPost); // Pagination by using slice() on array for fetched posts - returns sliced data
@@ -61,9 +58,7 @@ export default function RedditPosts() {
       return post.data.title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
       } 
     return post.data.link_title.toLowerCase().includes(savedPostsRef.current.value.toLowerCase())
-  })
-  console.log("search q: ", savedPostsRef.current.value);
-  console.log("result: ", savedPostsSearch);
+  });
 
     setSearchResponse(savedPostsSearch)
   };

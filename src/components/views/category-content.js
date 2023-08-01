@@ -10,9 +10,9 @@ import SyncLoader from "react-spinners/SyncLoader";
 const CategoryContent = () => {
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979";
   const location = useLocation();
-  const { params, id } = useParams();
+  const { params } = useParams();
   const urlParams = params.replace(/-/g, " ");
-  const { currentUser,  categoryIdData, categories, currentPage, bookmarksIndex, setBookmarksIndex } = useAuth();
+  const { currentUser, categoryIdData, categories, currentPage, bookmarksIndex, setBookmarksIndex } = useAuth();
   const { categoryContent, setCategoryContent } = useUserContext();
   const baseUrl = 'https://www.reddit.com';
   const [imageContent, setImageContent] = React.useState({});
@@ -25,7 +25,6 @@ const CategoryContent = () => {
   const [showText, setShowText] = React.useState(false)
   const [loading, setLoading] = React.useState(false);
 
-console.log("params: ", location);
   ////////////
   React.useEffect(() => {
     async function getCategoryContent () {

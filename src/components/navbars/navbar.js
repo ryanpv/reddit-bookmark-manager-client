@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button, Container, Form, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap'
 import { useAuth } from "../../contexts/auth-context.js"
-import { Redirect, useNavigate, NavLink } from 'react-router-dom'
+import { useNavigate, NavLink } from 'react-router-dom'
 
 function AppNavbar() {
   const { currentUser, setSearchResponse, logout, setCurrentPage } = useAuth();
@@ -10,7 +10,7 @@ function AppNavbar() {
   
   const navigate = useNavigate();
   const searchRef = React.useRef('')
-  const [searchItem, setSearchItem] = React.useState("")
+  const [setSearchItem] = React.useState("")
 
   async function searchSubmit(e) {
     e.preventDefault();

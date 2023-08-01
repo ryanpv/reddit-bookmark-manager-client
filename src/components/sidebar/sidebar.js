@@ -1,33 +1,21 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useLocation, NavLink, useParams, useNavigate, Route, Routes} from "react-router-dom";
-import { Button, Nav, Form, NavDropdown, Container } from "react-bootstrap";
+import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Form } from "react-bootstrap";
 // import CategoryList from "./categoryList.js";
 import { useUserContext } from "../../contexts/user-context.js";
 import { useAuth } from "../../contexts/auth-context.js";
-import Signup from "../account/signup.js";
-import Login from "../account/login.js";
-import AppNavbar from "../navbars/navbar.js";
-import ResetPassword from "../account/reset-password.js";
 import CategoryList from "./category-list.js";
 import SyncLoader from "react-spinners/SyncLoader.js";
 
 function Sidebar({ color, image, routes }) { // 'routes' parameter is reference to the routes prop from "/Sidebar.js" to share the routes array data
   const serverUrl = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_DEPLOYED_SERVER : "http://localhost:7979"
-  const location = useLocation();
   const categoryInputRef = useRef();
   const inputSearch = useRef();
   const navigate = useNavigate();
   const { categories, setCategories } = useUserContext();
-  const { currentUser, setCurrentPage } = useAuth();
-  // console.log("current", currentUser._delegate.uid);
-  const token = currentUser && currentUser.accessToken;
-  const newCategory = document.getElementById("new-category");
-  const categorySearch = document.getElementById("inputSearch");
+  const { currentUser } = useAuth();
   const [confirmValue, setConfirmValue] = useState(""); // useEffect dependency to rerender app when new category added
   const [categoryInputValue, setCategoryInputValue] = useState({ categoryName: "" });
-  const activeRoute = (routeName) => {
-    return location.pathname.indexOf(routeName) > -1 ? "active" : "";
-  };
   const [newCategoryInput, setNewCategoryInput] = useState(true); // to reveal input to add new category
   const [categorySearchState, setCategorySearchState] = useState(true);
   const [loading, setLoading] = useState(false)
