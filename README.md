@@ -4,7 +4,7 @@ Reddit Bookmark Manager is a web-app that allows users to organize their saved R
 
 This repository is the source code for the client-side. To view server-side source code, visit [reddit-bm-api](https://github.com/ryanpv/reddit-bm-api)
 
-![Reddit-bookmark-manager-screenshot](https://raw.githubusercontent.com/ryanpv/reddit-bookmark-manager-client/public/Reddit-bookmark-manager-screenshot.jpg)
+![Reddit-bookmark-manager-screenshot](https://raw.githubusercontent.com/ryanpv/reddit-bookmark-manager-client/main/.github/Reddit-bookmark-manager-screenshot.jpg)
 
 ## Features
 * Sign up / login
