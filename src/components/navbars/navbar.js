@@ -54,7 +54,7 @@ function AppNavbar() {
           <Navbar.Toggle aria-controls="navbarScroll" />
 
           <Navbar.Collapse id="navbarScroll">
-            <Form className="w-100 me-3" onSubmit={searchSubmit}>
+            <Form className="w-100" onSubmit={searchSubmit}>
               <Form.Control
                 type="search"
                 placeholder="Search For Bookmark"
@@ -64,7 +64,7 @@ function AppNavbar() {
                 />
             </Form>
               {/* <Button size="" variant="outline-primary" onClick={(e) => searchSubmit(e)}>Search</Button> */}    
-
+          <div  className="ml-5">
             <Nav>
               { currentUser ? 
               <Button variant='link' onClick={(e) => handleLogout(e)}>Log Out</Button>
@@ -75,6 +75,8 @@ function AppNavbar() {
               </>
               }
             </Nav>
+            
+          </div>
           </Navbar.Collapse>
         </Navbar>
       </Container>
